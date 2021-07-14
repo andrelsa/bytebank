@@ -1,4 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {TransferenciaService} from '../servives/transferencia.service';
+import {Transferencia} from '../models/transferencia.model';
 
 @Component({
   selector: 'app-nova-transferencia',
@@ -14,7 +16,7 @@ export class NovaTransferenciaComponent implements OnInit {
   // @ts-ignore
   destino: number;
 
-  constructor() {
+  constructor(private service: TransferenciaService) {
   }
 
   ngOnInit(): void {
@@ -23,9 +25,15 @@ export class NovaTransferenciaComponent implements OnInit {
   // tslint:disable-next-line:typedef
   transferir() {
     console.log('Solicitada nova transferência');
-    const valorEmitir = {valor: this.valor, destino: this.destino};
-    this.aoTransferir.emit(valorEmitir);
-    this.limparCampos();
+
+    const valorEmitir: Transferencia = {valor: this.valor, destino: this.destino};
+
+    this.service.adicionar(valorEmitir).subscribe(resultado => {
+        console.log(resultado);
+        this.limparCampos();
+      },
+      error => console.error(error)
+    );
   }
 
   // tslint:disable-next-line:typedef
